@@ -21,16 +21,13 @@ class IpSingleSession
         $ipAddress = $request->ip();
         $cacheKey = "rate_limit_{$ipAddress}";
 
-        // Check if there is an active session stored for this IP
         if (Cache::has($cacheKey)) {
             return response()->json([
                 'message' => 'Another session is already in progress for this IP address.'
             ], 429);
         }
 
-        // Store or update the session ID for this IP in the cache
-        Cache::put($cacheKey, true, now()->addMinutes(30)); // Store for 30 minutes, adjust as needed
-
+        Cache::put($cacheKey, true, now()->addMinutes(30));
         return $next($request);
     }
 }
